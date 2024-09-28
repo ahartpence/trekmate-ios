@@ -1,0 +1,37 @@
+{
+  "configurations" : [
+    {
+      "id" : "6C920390-186E-460B-A188-5E606D6A3F10",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:TrekMate.xcodeproj",
+      "identifier" : "493C6E002CA81D600000769B",
+      "name" : "TrekMate"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:TrekMate.xcodeproj",
+        "identifier" : "493C6E102CA81D610000769B",
+        "name" : "TrekMateTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:TrekMate.xcodeproj",
+        "identifier" : "493C6E1A2CA81D610000769B",
+        "name" : "TrekMateUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

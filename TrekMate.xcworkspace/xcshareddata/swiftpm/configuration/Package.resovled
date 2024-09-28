@@ -1,0 +1,11 @@
+{
+  "originHash" : "31784256f4ea8b1f97e737dc0ef62e3c404ecd98802495c58d84f45344aaee3b",
+  "pins" : [
+    {
+      "identity" : "swift-recreationgov-api",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ahartpence/swift-recreationgov-api",
+    }
+  ],
+  "version" : 3
+}
