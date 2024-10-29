@@ -1,10 +1,3 @@
-#
-//  ci_pre_xcodebuild.sh
-//  TrekMate
-//
-//  Created by Andrew Hartpence on 10/29/24.
-//
-
 #!/bin/sh
 
 echo "Stage: PRE-Xcode Build is activated .... "
