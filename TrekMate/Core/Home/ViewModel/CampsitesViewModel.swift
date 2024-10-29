@@ -21,7 +21,7 @@ class CampsitesViewModel: ObservableObject, Sendable {
         }
         
         do {
-            let client = RecreationGovApiClient(apiKey: ProcessInfo.processInfo.environment["API_KEY"] ?? "")
+            let client = RecreationGovApiClient(apiKey: Secrets.apiKey)
             let fetchedCampsites = try await client.getAllCampsites(query: query)
             
             // Update campsites on the main thread

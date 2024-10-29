@@ -35,6 +35,7 @@
 		493C6E112CA81D610000769B /* TrekMateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrekMateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		493C6E1B2CA81D610000769B /* TrekMateUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrekMateUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		49E115D22CA8CE9800D6E57C /* mountains_background.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = mountains_background.jpg; sourceTree = "<group>"; };
+		49EEEA072CD0F31800AD0AD4 /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -98,6 +99,7 @@
 		493C6DF82CA81D600000769B = {
 			isa = PBXGroup;
 			children = (
+				49EEEA062CD0F30A00AD0AD4 /* ci_scripts */,
 				491E1CA62CB88D3E0084ECE4 /* TrekMate.xctestplan */,
 				49E115D22CA8CE9800D6E57C /* mountains_background.jpg */,
 				493C6E032CA81D600000769B /* TrekMate */,
@@ -123,6 +125,14 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		49EEEA062CD0F30A00AD0AD4 /* ci_scripts */ = {
+			isa = PBXGroup;
+			children = (
+				49EEEA072CD0F31800AD0AD4 /* ci_pre_xcodebuild.sh */,
+			);
+			path = ci_scripts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
