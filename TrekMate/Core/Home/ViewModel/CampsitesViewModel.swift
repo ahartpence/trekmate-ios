@@ -6,6 +6,13 @@ class CampsitesViewModel: ObservableObject, Sendable {
     @Published var campsites: [Campsite] = []
     
     func searchCampsites(query: String) async {
+        guard query.count > 3 else {
+            DispatchQueue.main.async {
+                self.campsites = []
+            }
+            return
+        }
+        
         guard !query.isEmpty else {
             DispatchQueue.main.async {
                 self.campsites = []

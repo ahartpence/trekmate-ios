@@ -4,6 +4,7 @@
 //
 //  Created by Andrew Hartpence on 10/9/24.
 //
+import SwiftRecGovApi
 import SwiftUI
 
 
@@ -21,11 +22,7 @@ struct AddTrip: View {
         return dateFormatter.date(from: "2024/10/21 12:12:12 -0500") ?? Date()
     }()
     @State private var endDate = Date()
-    
 
-    
-    
-    
     
     var body: some View {
         
@@ -135,17 +132,18 @@ struct AddTrip: View {
         }
         .background(Color(UIColor.systemGray3))
         .sheet(isPresented: $uiVM.showingCampgroundSearchSheet) {
-            CampgroundSearchSheet(uiVM: uiVM)
+            SearchSheet(uiVM: uiVM)
         }
-        .sheet(isPresented: $uiVM.showingBackcountrySearchSheet) {
-            BackcountrySearchSheet(uiVM: uiVM)
-        }
+        
     }
     
 }
 
-struct CampgroundSearchSheet: View {
+struct SearchSheet: View {
     @ObservedObject var uiVM: UIModel
+    @StateObject var searchVM: SearchViewModel = SearchViewModel()
+    
+    
     let numbers = Array(1...25)
     
     var body: some View {
@@ -159,7 +157,7 @@ struct CampgroundSearchSheet: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
-                Text("Campground")
+                Text("Destination")
                     .font(.title2.weight(.bold))
                     .frame(maxWidth: .infinity, alignment: .center)
                 
@@ -167,79 +165,26 @@ struct CampgroundSearchSheet: View {
             .padding([.horizontal, .vertical], 20)
             
                 
-            TextField("search...", text: .constant(""))
+            TextField("search...", text: $searchVM.searchText)
                 .foregroundColor(.primary)
                 .padding(.horizontal, 5)
                 .padding(.bottom, 10)
+                .autocorrectionDisabled()
                 .textFieldStyle(TrekMateTextFieldStyle())
+                
     
             
             
             ScrollView {
                 VStack (spacing: 0){
-                    HStack {
-                        Image("nps")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 50, height: 50)
-                            .background(.clear)
-                            .clipped()
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                        
-                        VStack (alignment: .leading) {
-                            Text("Platte River Campground ")
-                                .font(.headline)
-                            Text("Austria")
-                                .font(.subheadline.weight(.light))
+                    ForEach(searchVM.searchResults) { item in
+                        switch item {
+                        case .recArea(let recArea):
+                            RecAreaListItem(recArea: recArea)
+                        case .facility(let facility):
+                            FacilityListItem(facility: facility)
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 10)
-                    .overlay(
-                        Group {
-                            
-                                Rectangle()
-                                    .frame(height: 1)
-                                    .foregroundStyle(.border)
-                                    .padding(.horizontal, 40) // Adjust to align with text
-                            
-                        },
-                        alignment: .bottom
-                    )
-
-                    
-                    
-                    HStack {
-                        Image("Paypal")
-                            .background(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                        
-                        VStack (alignment: .leading) {
-                            Text("Annaberg")
-                                .font(.headline)
-                            Text("Austria")
-                                .font(.subheadline.weight(.light))
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 10)
-                    .overlay(
-                        Group {
-                            
-                                Rectangle()
-                                    .frame(height: 1)
-                                    .foregroundStyle(.border)
-                                    .padding(.horizontal, 40) // Adjust to align with text
-                            
-                        },
-                        alignment: .bottom
-                    )
                     
                 }
                 .background(Color(UIColor.systemGray5))
@@ -252,99 +197,77 @@ struct CampgroundSearchSheet: View {
         .padding(.horizontal, 10)
         .background(Color(UIColor.systemGray3))
 
+        
     }
 }
 
-struct BackcountrySearchSheet: View {
-    @ObservedObject var uiVM: UIModel
-    let numbers = Array(1...25)
-    var body: some View {
-        VStack {
-            ZStack {
-                Button {
-                    print("button Tapped. State is: \(uiVM.showingBackcountrySearchSheet.description.capitalized)")
-                    uiVM.showingBackcountrySearchSheet.toggle()
-                   
-                } label: {
-                    Text("Close")
-                    
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                
-                Text("Location Search")
-                    .font(.title2.weight(.bold))
-                    .frame(maxWidth: .infinity, alignment: .center)
-                
-                
-            }
-            .padding([.horizontal, .vertical], 20)
-            
-                
-            TextField("search...", text: .constant(""))
-                .foregroundColor(.primary)
-                .padding(.horizontal, 5)
-                .padding(.bottom, 10)
-                .textFieldStyle(TrekMateTextFieldStyle())
+struct RecAreaListItem: View {
+    let recArea: RecArea
     
-            
-            
-            ScrollView {
-                VStack (spacing: 0){
-                    VStack (alignment: .leading) {
-                        Text("Honor, MI")
-                            .font(.headline)
-                        Text("United States")
-                            .font(.subheadline.weight(.light))
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 10)
-                    .overlay(
-                        Group {
-                            
-                                Rectangle()
-                                    .frame(height: 1)
-                                    .foregroundStyle(.border)
-                                    .padding(.horizontal, 40) // Adjust to align with text
-                            
-                        },
-                        alignment: .bottom
-                    )
-
-                    
-                    
-                    VStack (alignment: .leading) {
-                        Text("Honoraville, AL")
-                            .font(.headline)
-                        Text("United States")
-                            .font(.subheadline.weight(.light))
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 10)
-                    .overlay(
-                        Group {
-                            
-                                Rectangle()
-                                    .frame(height: 1)
-                                    .foregroundStyle(.border)
-                                    .padding(.horizontal, 40) // Adjust to align with text
-                            
-                        },
-                        alignment: .bottom
-                    )
-                    
-                }
-                .background(Color(UIColor.systemGray5))
+    var body: some View {
+        HStack {
+            Image("Paypal")
+                .background(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
-                
+            
+            VStack (alignment: .leading) {
+                Text("\(recArea.name)")
+                    .font(.headline)
+                Text("\(recArea.description)")
+                    .font(.subheadline.weight(.light))
             }
-            
-            
+            .frame(maxWidth: .infinity, alignment: .leading)
+    
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 10)
-        .background(Color(UIColor.systemGray3))
+        .padding(.vertical, 10)
+        .overlay(
+            Group {
+                
+                    Rectangle()
+                        .frame(height: 1)
+                        .foregroundStyle(.border)
+                        .padding(.horizontal, 40) // Adjust to align with text
+                
+            },
+            alignment: .bottom
+        )
+    }
+}
 
+struct FacilityListItem: View {
+    let facility: Facility
+    
+    var body: some View {
+        HStack {
+            Image("GoldApple")
+                .background(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            
+            VStack (alignment: .leading) {
+                Text("\(facility.name)")
+                    .font(.headline)
+                Text("Honor, Mi")
+                    .font(.subheadline.weight(.light))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+    
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 10)
+        .overlay(
+            Group {
+                
+                    Rectangle()
+                        .frame(height: 1)
+                        .foregroundStyle(.border)
+                        .padding(.horizontal, 40) // Adjust to align with text
+                
+            },
+            alignment: .bottom
+        )
     }
 }
 
@@ -355,13 +278,5 @@ struct BackcountrySearchSheet: View {
     
     AddTrip(tripVM: tripVM ,uiVM: uiVM)
 }
-#Preview {
-    @Previewable @StateObject var uiVM: UIModel = UIModel()
-    BackcountrySearchSheet(uiVM: uiVM)
-}
 
-#Preview {
-    @Previewable @StateObject var uiVM: UIModel = UIModel()
-    CampgroundSearchSheet(uiVM: uiVM)
-}
 
