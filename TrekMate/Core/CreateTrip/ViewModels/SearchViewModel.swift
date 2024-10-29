@@ -49,7 +49,7 @@ class SearchViewModel: ObservableObject {
         }
         
         do {
-            let client = RecreationGovApiClient(apiKey: ProcessInfo.processInfo.environment["API_KEY"] ?? "")
+            let client = RecreationGovApiClient(apiKey: Secrets.apiKey)
             async let recAreasTask = client.getAllRecAreas(query: searchText)
             async let facilitiesTask = client.getAllFacilities(query: searchText)
             

@@ -14,6 +14,8 @@ struct TrekMateApp: App {
     @StateObject var uiVM: UIModel = UIModel()
     @StateObject var tripVM: TripViewModel = TripViewModel()
     
+   
+    
     
     var body: some Scene {
         WindowGroup {

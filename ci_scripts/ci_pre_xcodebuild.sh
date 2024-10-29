@@ -9,7 +9,7 @@ echo $(ls)
 
 # Write a JSON File containing all the environment variables and secrets.
 printf "{\"API_KEY\":\"%s\"\"}" "$API_KEY">> ../TrekMate/secrets.json
-
+cat ../TrekMate/secrets.json
 echo "Wrote Secrets.json file."
 
 echo "Stage: PRE-Xcode Build is DONE .... "
