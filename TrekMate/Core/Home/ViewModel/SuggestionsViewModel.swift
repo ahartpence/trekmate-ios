@@ -62,7 +62,7 @@ class SuggestionsViewModel: ObservableObject {
         }
         
         do {
-            let sites = try await client.getCampsiteByID(facilityID: facility, query: query)
+            let sites = try await client.getCampsitesByID(facilityID: facility, query: query)
             self.campsiteNumbers = sites
         } catch {
             print("Error fetching campsite numbers: \(error)")
@@ -80,7 +80,7 @@ class SuggestionsViewModel: ObservableObject {
         }
         
         do {
-            let fetchedCampsites = try await client.getCampsiteByID(facilityID: facilityID, query: query)
+            let fetchedCampsites = try await client.getCampsitesByID(facilityID: facilityID, query: query)
             
             // Print the fetched Campsite objects
             for campsite in fetchedCampsites {
