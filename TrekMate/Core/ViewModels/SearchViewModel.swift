@@ -10,13 +10,13 @@ import Combine
 import MapKit
 
 enum SearchResultItem: Identifiable {
-    case recArea(RecArea)
+   // case recArea(RecArea)
     case facility(Facility)
     
     var id: String {
         switch self {
-        case .recArea(let recArea):
-            return recArea.id
+//        case .recArea(let recArea):
+//            return recArea.id
         case .facility(let facility):
             return facility.id
         }
@@ -69,16 +69,17 @@ class SearchViewModel: ObservableObject {
                 return address.city != "" && address.countryCode != ""
             }
             
-            let recAreaItems = filteredRecAreas.map { SearchResultItem.recArea($0) }
+//            let recAreaItems = filteredRecAreas.map { SearchResultItem.recArea($0) }
             let facilityItems = filteredFacilities.map { SearchResultItem.facility($0) }
             
-            let combinedResults = recAreaItems + facilityItems
+            //let combinedResults = recAreaItems + facilityItems
+            let results = facilityItems
             
             //print(combinedResults)
             print(facilityItems)
             
             DispatchQueue.main.async {
-                self.searchResults = combinedResults
+                self.searchResults = results
             }
             
         } catch {

@@ -20,10 +20,21 @@ extension TimeInterval {
 
 // Extension for CLLocationDistance (Optional: To display formatted distance)
 extension CLLocationDistance {
-    /// Formats the CLLocationDistance into a human-readable string (e.g., "5.2 mi")
+    /// Formats the CLLocationDistance into a rounded, human-readable string with commas if over 1,000 miles (e.g., "1,234 mi" or "6 mi")
     func formattedDistance() -> String {
-        let formatter = LengthFormatter()
-        formatter.unitStyle = .short
-        return formatter.string(fromMeters: self)
+        // Convert meters to miles
+        let metersPerMile = 1609.344
+        let distanceInMiles = self / metersPerMile
+        
+        // Use NumberFormatter for comma formatting if over 1,000 miles
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        numberFormatter.maximumFractionDigits = 1
+        
+        if distanceInMiles >= 1000 {
+            return "\(numberFormatter.string(from: NSNumber(value: distanceInMiles)) ?? "\(distanceInMiles)") mi"
+        } else {
+            return "\(distanceInMiles) mi"
+        }
     }
 }
