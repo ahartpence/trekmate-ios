@@ -13,15 +13,14 @@ struct AddTrip: View {
     @ObservedObject var uiVM: UIModel
     
     @State var tripName: String = ""
-    @State var tripDestination: Location?
     
-    @State private var startDate: Date = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss ZZZ"
-        dateFormatter.timeZone = TimeZone(abbreviation: "EST")
-        return dateFormatter.date(from: "2024/10/21 12:12:12 -0500") ?? Date()
-    }()
-    @State private var endDate = Date()
+    var isCreateEnabled: Bool {
+        return tripVM.selectedFacility != nil && !tripVM.tripName.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+    
+    
+    @State private var startDate: Date = Date().addingTimeInterval((60 * 60 * 24) * 3)
+    @State private var endDate = Date().addingTimeInterval((60 * 60 * 24) * 9)
 
     
     var body: some View {
@@ -42,10 +41,13 @@ struct AddTrip: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                 
                 Button {
+                    tripVM.createTrip(name: tripVM.tripName, description: nil, location: Location(campArea: tripVM.selectedFacility), startDate: startDate, endDate: endDate, attendees: [], status: .planning)
                     uiVM.showingAddTripSheet.toggle()
+                    tripVM.selectedFacility = nil
                 } label: {
                     Text("Create")
                 }
+                .disabled(!isCreateEnabled )
                 
                 Spacer()
                 
@@ -57,7 +59,7 @@ struct AddTrip: View {
             
             Form {
                 Section (header: Text("Trip")) {
-                    TextField("Trip Name", text: $tripName)
+                    TextField("Trip Name", text: $tripVM.tripName)
                     
                     VStack (alignment: .leading){
                         HStack {
@@ -82,7 +84,7 @@ struct AddTrip: View {
 
                 Section (header: Text("Destination")) {
                     
-                    if tripDestination == nil {
+                    if tripVM.selectedFacility == nil {
                         HStack {
                             Image(systemName: "plus.circle.fill")
                                 .symbolRenderingMode(.hierarchical)
@@ -107,11 +109,11 @@ struct AddTrip: View {
                         HStack {
                             Image("Paypal")
                             VStack (alignment: .leading){
-                                Text("Platte River Campground")
+                                Text(tripVM.selectedFacility?.name ?? "Error")
                                     .font(.headline)
-                                Text("Sleeping Bear Dunes")
+                                Text(tripVM.selectedFacility?.recArea?.last?.name ?? "Error")
                                     .font(.subheadline.weight(.light))
-                                Text("Michigan, United States")
+                                Text("\(tripVM.selectedFacility?.address?.last?.city.capitalized ?? "Error") \(tripVM.selectedFacility?.address?.last?.stateCode ?? "Error")")
                                     .font(.subheadline.weight(.ultraLight))
                             }
                             Spacer()
@@ -131,20 +133,28 @@ struct AddTrip: View {
             
         }
         .background(Color(UIColor.systemGray3))
-        .sheet(isPresented: $uiVM.showingCampgroundSearchSheet) {
+        .sheet(isPresented: Binding<Bool>(
+            get: { tripVM.selectedFacility == nil && uiVM.showingCampgroundSearchSheet },
+            set: { isPresented in
+                if !isPresented {
+                    uiVM.showingCampgroundSearchSheet = false
+                }
+            }
+        )) {
             SearchSheet(uiVM: uiVM)
         }
-        
     }
-    
+}
+
+#Preview {
+    @Previewable @StateObject var tripVM: TripViewModel = TripViewModel()
+    @Previewable @StateObject var uiVM = UIModel()
+    AddTrip(tripVM: tripVM, uiVM: uiVM)
 }
 
 struct SearchSheet: View {
     @ObservedObject var uiVM: UIModel
     @StateObject var searchVM: SearchViewModel = SearchViewModel()
-    
-    
-    let numbers = Array(1...25)
     
     var body: some View {
         VStack {
@@ -213,7 +223,7 @@ struct RecAreaListItem: View {
             VStack (alignment: .leading) {
                 Text("\(recArea.name)")
                     .font(.headline)
-                Text("\(recArea.description)")
+                Text("\(recArea.address?.last?.city.capitalized ?? "No City"), \(recArea.address?.last?.countryCode ?? "No Country Code")")
                     .font(.subheadline.weight(.light))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -237,19 +247,34 @@ struct RecAreaListItem: View {
 }
 
 struct FacilityListItem: View {
-    let facility: Facility
+    @StateObject var searchVM: SearchViewModel = SearchViewModel()
+    @EnvironmentObject var tripVM: TripViewModel
+    let facility: Facility?
+
     
     var body: some View {
         HStack {
-            Image("GoldApple")
-                .background(.white)
+            Image(systemName: "location")
+                .resizable()
+                .scaledToFit()
+                .foregroundStyle(.white)
+                .padding(8)
+                .frame(width: 40, height: 40)
+                .background(Color.darkForestGreen)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
+              
+            
             
             VStack (alignment: .leading) {
-                Text("\(facility.name)")
+                Text("\(facility?.name ?? "Platte River Campground")")
                     .font(.headline)
-                Text("Honor, Mi")
-                    .font(.subheadline.weight(.light))
+                Text("\(facility?.recArea?.last?.name ?? "Sleeping Bear Dunes Recreation Area")")
+                    .font(.callout.weight(.light))
+                HStack {
+                    Text("\(facility?.address?.last?.city.capitalized ?? "No City"), \(facility?.address?.last?.stateCode ?? "No State")")
+                        .font(.subheadline.weight(.thin))
+                    
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
     
@@ -268,6 +293,10 @@ struct FacilityListItem: View {
             },
             alignment: .bottom
         )
+        .onTapGesture {
+            tripVM.selectedFacility = facility
+            print("Tapped Facility is: \(facility?.name)")
+        }
     }
 }
 
@@ -279,4 +308,8 @@ struct FacilityListItem: View {
     AddTrip(tripVM: tripVM ,uiVM: uiVM)
 }
 
+#Preview {
+    FacilityListItem(facility: nil)
+        
+}
 

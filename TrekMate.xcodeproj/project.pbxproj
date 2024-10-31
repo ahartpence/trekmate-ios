@@ -48,11 +48,22 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		49B8D07C2CD32A970065635B /* Exceptions for "TrekMate" folder in "Copy Bundle Resources" phase from "TrekMate" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 493C6DFF2CA81D600000769B /* Resources */;
+			membershipExceptions = (
+				Extensions/TimeInterval.swift,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		493C6E032CA81D600000769B /* TrekMate */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				49866F4C2CB0A93100F250E8 /* Exceptions for "TrekMate" folder in "TrekMate" target */,
+				49B8D07C2CD32A970065635B /* Exceptions for "TrekMate" folder in "Copy Bundle Resources" phase from "TrekMate" target */,
 			);
 			path = TrekMate;
 			sourceTree = "<group>";

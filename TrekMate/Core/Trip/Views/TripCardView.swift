@@ -2,51 +2,18 @@ import SwiftUI
 import MapKit
 
 
-public struct TripCardView: View {
-    @StateObject var viewModel = TripViewModel()
-    var trip: Trip?
-    var onRemove: (()-> Void)?
+struct TripCardView: View {
+    @EnvironmentObject var tripVM: TripViewModel
+    var trip: Trip
+
+    let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d"
+        return formatter
+    }()
     
-    @State private var offsetX: CGFloat = 0
-    @GestureState private var dragState = DragState.inactive
-    
-    
-    private enum DragState {
-        case inactive
-        case dragging(translation: CGFloat)
-        
-        var translation: CGFloat {
-            switch self {
-            case .inactive:
-                return 0
-            case .dragging(let translation):
-                return translation
-            }
-        }
-        
-        var isDragging: Bool {
-            switch self {
-            case .inactive:
-                return false
-            case .dragging:
-                return true
-            }
-        }
-    }
-    
-    public var body: some View {
-        ZStack {
-            Color.red
-            
-            VStack {
-                Image(systemName: "trash.fill")
-                Text("Delete")
-            }
-            .foregroundStyle(.white)
-            .padding(.horizontal, 20)
-            .frame(maxWidth: .infinity, alignment: .trailing)
-            
-            
+    var body: some View {
+        if let routeDetails = tripVM.tripRouteDetails[trip] {
             VStack {
                 ZStack {
                     // Background Layer
@@ -59,9 +26,11 @@ public struct TripCardView: View {
                     }
                     // Map Layer
                     ZStack {
-                        Map()
+                        
+                        MapView(routeDetails: routeDetails)
                             .frame(width: 120, height: 120)
                             .clipShape(RoundedRectangle(cornerRadius: 20))
+                        
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                     .padding(.trailing, 20)
@@ -73,29 +42,16 @@ public struct TripCardView: View {
                 .padding(.horizontal, 20)
                 
                 VStack(alignment: .leading, spacing: 5) {
-                    
-                    Text("Summer 2025 Campathon")
+                    Text(trip.name)
                         .font(.title2.weight(.bold))
                         .foregroundColor(.primary)
                     
                     HStack (spacing: 20) {
                         VStack (alignment: .leading) {
-                            Text("2 Nights")
+                            Text("\((trip.tripDuration)) Nights") // Days -1 to get number of nights
                                 .font(.callout.weight(.semibold))
                                 .foregroundStyle(.primary)
-                            Text("Oct 25 -  Nov 1")
-                                .font(.footnote.weight(.light))
-                        }
-                        
-                        Rectangle()
-                            .frame(width: 1, height: 40)
-                            .foregroundStyle(.separator)
-                        
-                        VStack (alignment: .leading) {
-                            Text("840 Mi")
-                                .font(.callout.weight(.semibold))
-                                .foregroundStyle(.primary)
-                            Text("12hr 41min")
+                            Text("\(dateFormatter.string(from: trip.startDate)) - \(dateFormatter.string(from: trip.endDate))")
                                 .font(.footnote.weight(.light))
                         }
                         
@@ -106,7 +62,24 @@ public struct TripCardView: View {
                         
                         
                         VStack (alignment: .leading) {
-                            Text("7 days left")
+                            //840 Miles
+                            Text(routeDetails.route.distance.formattedDistance())
+                                .font(.callout.weight(.semibold))
+                                .foregroundStyle(.primary)
+                            //12 Hours
+                            Text(routeDetails.route.expectedTravelTime.formattedTravelTime())
+                                .font(.footnote.weight(.light))
+                        }
+                        
+                        Rectangle()
+                            .frame(width: 1, height: 40)
+                            .foregroundStyle(.separator)
+                        
+                        
+                        
+                        VStack (alignment: .leading) {
+                            //7 days left
+                            Text("\((trip.tripCountdownDaysLeft)) days left")
                                 .font(.callout.weight(.semibold))
                                 .foregroundStyle(.primary)
                             
@@ -119,7 +92,8 @@ public struct TripCardView: View {
                     HStack (spacing: 4) {
                         Image(systemName: "mappin.and.ellipse")
                             .foregroundStyle(.secondary)
-                        Text("Sleeping Bear Dunes • Platte River Campground")
+                        //Text("Sleeping Bear Dunes • Platte River Campground")
+                        Text("\(trip.location?.campArea?.name.capitalized ?? "Error") • \(trip.location?.campArea?.recArea?.last?.name ?? "Error")")
                             .font(.subheadline.weight(.light))
                             .foregroundStyle(.foreground)
                     }
@@ -127,7 +101,8 @@ public struct TripCardView: View {
                     HStack (spacing: 4) {
                         Image(systemName: "location")
                             .foregroundStyle(.secondary)
-                        Text("Honor, MI")
+                        // Text("Honor, MI")
+                        Text("\(trip.location?.campArea?.address?.last?.city.capitalized ?? "Error"), \(trip.location?.campArea?.address?.last?.stateCode ?? "Error")")
                             .font(.subheadline.weight(.light))
                             .foregroundStyle(.foreground)
                     }
@@ -137,53 +112,15 @@ public struct TripCardView: View {
                 
             }
             .background(.background)
-            .offset(x: offsetX + dragState.translation)
-            .simultaneousGesture(
-                    DragGesture()
-                        .updating($dragState) { value, state, _ in
-                            if abs(value.translation.width) > abs(value.translation.height) {
-                                state = .dragging(translation: value.translation.width)
-                            }
-                        }
-                        .onEnded { value in
-                            handleSwipeEnd(translation: value.translation.width)
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                // Ensures animations occur after the gesture ends
-                            }
-                        }
-                    )
-            .animation(.easeOut, value: offsetX)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 20)
-    }
-    
-    private func handleSwipeEnd(translation: CGFloat) {
-        // Define thresholds
-        let threshold1: CGFloat = -80    // First detent
-        let threshold2: CGFloat = -160   // Second detent
-        
-        withAnimation(.easeOut) {
-            if translation < threshold2 {
-                // User swiped past second detent: simulate deletion by sliding away
-                offsetX = -UIScreen.main.bounds.width
-                // Future: Add deletion logic here
-                onRemove?()
-            } else if translation < threshold1 {
-                // User swiped past first detent: snap to first detent
-                offsetX = threshold1
-            } else {
-                // User did not swipe enough: return to original position
-                offsetX = 0
-            }
         }
     }
 }
 
 
-
-struct TripCardView_Previews: PreviewProvider {
-    static var previews: some View {
-        TripCardView()
-    }
-}
+//
+//struct TripCardView_Previews: PreviewProvider {
+//    
+//    static var previews: some View {
+//        TripCardView()
+//    }
+//}

@@ -13,6 +13,7 @@ import SwiftUI
 struct TrekMateApp: App {
     @StateObject var uiVM: UIModel = UIModel()
     @StateObject var tripVM: TripViewModel = TripViewModel()
+    @StateObject var profileVM: ProfileViewModel = ProfileViewModel()
     
    
     
@@ -25,5 +26,8 @@ struct TrekMateApp: App {
             
             
         }
+        .environmentObject(tripVM)
+        .environmentObject(profileVM)
+        .environmentObject(uiVM)
     }
 }

@@ -6,11 +6,15 @@
 //
 import SwiftUI
 
-struct User {
+struct User: Hashable, Identifiable {
     let id: UUID = UUID()
     let name: String
     let homeLocation: String?
     let trips: [Trip]?
     let friends: [User]?
     let profilePicture: Image?
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }

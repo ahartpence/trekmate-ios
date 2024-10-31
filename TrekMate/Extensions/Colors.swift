@@ -6,8 +6,7 @@
 //
 import SwiftUI
 
-let offBlack = Color(rgb: 0x30363a)
-let offWhite = Color(rgb: 0xfa)
+
 
 extension Color {
     init(red: Int, green: Int, blue: Int) {
@@ -25,6 +24,14 @@ extension Color {
            blue: rgb & 0xFF
        )
    }
+}
+
+extension Color {
+    static let darkForestGreen = Color(rgb: 0x002D04)
+    static let darkRed = Color(rgb: 0x580000)
+    static let forestGreen = Color(rgb: 0x228B22)
+    static let offBlack = Color(rgb: 0x30363a)
+    static let offWhite = Color(rgb: 0xfa)
 }
 
 

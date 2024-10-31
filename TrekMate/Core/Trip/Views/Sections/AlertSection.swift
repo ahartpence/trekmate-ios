@@ -45,9 +45,7 @@ struct AlertSection: View {
     }
 }
 
-extension Color {
-    static let darkRed = Color(rgb: 0x580000)
-}
+
 
 
 #Preview {

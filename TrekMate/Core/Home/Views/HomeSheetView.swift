@@ -44,9 +44,7 @@ struct HomeSheetView: View {
                     VStack {
                         ForEach(tripVM.trips) { trip in
                             NavigationLink(value: trip) {
-                                TripCardView(trip: trip, onRemove: {
-                                    tripVM.removeTrip(trip)
-                                })
+                                TripCardView(trip: trip)
                                 .padding(.bottom, 25)
                             }
                         }
