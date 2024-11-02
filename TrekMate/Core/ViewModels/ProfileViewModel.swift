@@ -11,9 +11,10 @@ final class ProfileViewModel: ObservableObject {
     @Published var firstName = "John"
     @Published var lastName = "Appleseed"
     @Published var homeLocation = "Detroit, Mi"
-    @Published var trips = []
-    @Published var friends = []
+    @Published var trips: [Trip]?
+    @Published var friends: [User]?
     @Published var profileImage: Image?
+    @Published var gear: [Equipment]?
     
     @Published var error: String?
     @Published var permissionStatus: Bool = false

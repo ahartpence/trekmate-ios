@@ -30,7 +30,7 @@ enum Product: String, CaseIterable {
     }
 }
 
-struct Equipment: Identifiable {
+struct Equipment: Identifiable, Equatable {
     let id = UUID()
     var name: String
     var type: Product
@@ -90,23 +90,30 @@ struct AddEquipmentView: View {
     @Binding var equipmentList: [Equipment]
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
-                TextField("Equipment Name", text: $name)
+                Section{
+                    TextField("Name", text: $name)
                 
-                Picker("Type", selection: $selectedProduct) {
-                    ForEach(Product.allCases, id: \.self) { product in
-                        Text(product.rawValue).tag(product)
+                    Picker("Type", selection: $selectedProduct) {
+                        ForEach(Product.allCases, id: \.self) { product in
+                            Text(product.rawValue).tag(product)
+                        }
                     }
                 }
                 
-                Button("Add Equipment") {
-                    let newEquipment = Equipment(name: name, type: selectedProduct)
-                    equipmentList.append(newEquipment)
-                    dismiss()
+                Section {
+                    Button("Add Equipment") {
+                        let newEquipment = Equipment(name: name, type: selectedProduct)
+                        equipmentList.append(newEquipment)
+                        dismiss()
+                    }
                 }
+                
             }
-            .navigationTitle("Add Equipment")
+            
+           
+            .navigationTitle("")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {

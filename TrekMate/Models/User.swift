@@ -13,6 +13,7 @@ struct User: Hashable, Identifiable {
     let trips: [Trip]?
     let friends: [User]?
     let profilePicture: Image?
+    let gear: [Equipment]?
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)

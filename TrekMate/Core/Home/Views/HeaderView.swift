@@ -64,6 +64,7 @@ struct HeaderView: View {
 //            AddTripView(isPresented: $isShowingAddTripSheet, trips: $trips)
 //                .interactiveDismissDisabled()
             AddTrip(tripVM: tripVM ,uiVM: uiVM)
+                .interactiveDismissDisabled()
         }
     }
 }
