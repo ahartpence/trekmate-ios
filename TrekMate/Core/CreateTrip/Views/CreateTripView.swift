@@ -8,8 +8,8 @@ import SwiftUI
 
 
 struct AddTrip: View {
-    @ObservedObject var tripVM: TripViewModel
-    @ObservedObject var uiVM: UIModel
+    @EnvironmentObject var tripVM: TripViewModel
+    @EnvironmentObject var uiVM: UIModel
     
     var isCreateEnabled: Bool {
         return tripVM.selectedFacility != nil && !tripVM.tripName.trimmingCharacters(in: .whitespaces).isEmpty
@@ -56,8 +56,14 @@ struct AddTrip: View {
             
             Form {
                 Section (header: Text("Trip")) {
-                    TextField("Trip Name", text: $tripVM.tripName)
-                    
+                    HStack (spacing: 5) {
+                        Text("Name:")
+                        Spacer()
+                        TextField("Summer Campathon", text: $tripVM.tripName)
+                            .multilineTextAlignment(.trailing)
+                            .autocorrectionDisabled()
+                    }
+                   
                     VStack (alignment: .leading){
                         HStack {
                             Text("Start")
@@ -83,10 +89,7 @@ struct AddTrip: View {
                     
                     if tripVM.selectedFacility == nil {
                         HStack {
-                            Image(systemName: "plus.circle.fill")
-                                .symbolRenderingMode(.hierarchical)
-                                .foregroundStyle(.blue)
-                            Menu("Add") {
+                            Menu {
                                 Button {
                                     uiVM.showingCampgroundSearchSheet.toggle()
                                 } label: {
@@ -97,8 +100,16 @@ struct AddTrip: View {
                                 } label: {
                                     Label("Dispersed / Backcountry", systemImage: "globe")
                                 }
-
+                            } label: {
+                                Image(systemName: "plus.circle.fill")
+                                    .symbolRenderingMode(.hierarchical)
+                                    .foregroundStyle(.blue)
+                                Text("Add")
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                             }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            
+                         
                            
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity , alignment: .leading)
@@ -138,9 +149,16 @@ struct AddTrip: View {
                 }
             }
         )) {
-            RecGovSearchSheet(uiVM: uiVM)
+            RecGovSearchSheet()
         }
     }
 }
 
+#Preview {
+    @Previewable @StateObject var tripVM = TripViewModel()
+    @Previewable @StateObject var uiVM = UIModel()
+    AddTrip()
+        .environmentObject(tripVM)
+        .environmentObject(uiVM)
+}
 

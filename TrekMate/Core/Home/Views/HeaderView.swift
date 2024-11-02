@@ -61,9 +61,7 @@ struct HeaderView: View {
         .padding([.vertical, .horizontal], 10)
         .background(Color(UIColor.systemBackground))
         .sheet(isPresented: $uiVM.showingAddTripSheet) {
-//            AddTripView(isPresented: $isShowingAddTripSheet, trips: $trips)
-//                .interactiveDismissDisabled()
-            AddTrip(tripVM: tripVM ,uiVM: uiVM)
+            AddTrip()
                 .interactiveDismissDisabled()
         }
     }

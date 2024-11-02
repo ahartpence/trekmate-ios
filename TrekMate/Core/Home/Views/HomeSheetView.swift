@@ -16,8 +16,18 @@ struct HomeSheetView: View {
                     VStack {
                         ForEach(tripVM.trips) { trip in
                             NavigationLink(value: trip) {
-                                TripCardView(trip: trip)
-                                .padding(.bottom, 25)
+                                if tripVM.trips.count >= 1 {
+                                    rewrite(trip: trip)
+                                    .padding(.bottom, 25)
+                                    .padding(.horizontal, 10)
+                                } else {
+                                    rewrite(trip: trip)
+                                    .padding(.bottom, 25)
+                                    .padding(.horizontal, 10)
+                                    Rectangle()
+                                        .frame(width: UIScreen.main.bounds.width - 250, height: 0.5)
+                                        .foregroundStyle(.separator)
+                                }
                             }
                         }
                     }
@@ -27,6 +37,7 @@ struct HomeSheetView: View {
                 .buttonStyle(PlainButtonStyle())
                 .navigationDestination(for: Trip.self) { trip in
                     TripDetailView(/*trip: trip*/)
+                    
                 }
             }
         }

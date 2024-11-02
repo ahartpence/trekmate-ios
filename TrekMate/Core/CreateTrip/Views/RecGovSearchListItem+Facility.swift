@@ -10,7 +10,7 @@ import SwiftRecGovApi
 struct FacilityListItem: View {
     @StateObject var searchVM: SearchViewModel = SearchViewModel()
     @EnvironmentObject var tripVM: TripViewModel
-    let facility: Facility?
+    var facility: Facility?
 
     
     var body: some View {
@@ -56,7 +56,13 @@ struct FacilityListItem: View {
         )
         .onTapGesture {
             tripVM.selectedFacility = facility
-            print("Tapped Facility is: \(facility?.name)")
+            //print("Tapped Facility is: \(facility?.name)")
         }
     }
+}
+
+#Preview {
+    @Previewable @StateObject var tripVM = TripViewModel()
+    FacilityListItem()
+        .environmentObject(tripVM)
 }

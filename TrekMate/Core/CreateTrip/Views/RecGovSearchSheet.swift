@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct RecGovSearchSheet: View {
-    @ObservedObject var uiVM: UIModel
+    @EnvironmentObject var uiVM: UIModel
     @StateObject var searchVM: SearchViewModel = SearchViewModel()
     
     var body: some View {
@@ -63,4 +63,10 @@ struct RecGovSearchSheet: View {
 
         
     }
+}
+
+#Preview {
+    @Previewable @StateObject var uiVM = UIModel()
+    RecGovSearchSheet()
+        .environmentObject(uiVM)
 }
