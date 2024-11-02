@@ -21,8 +21,9 @@ struct TrekMateApp: App {
     var body: some Scene {
         WindowGroup {
             //TripDetailView()
-            HomeSheetView(uiVM: uiVM, tripVM: tripVM)
+            //HomeSheetView(uiVM: uiVM, tripVM: tripVM)
             //ProfileView()
+            HomeView()
             
             
         }

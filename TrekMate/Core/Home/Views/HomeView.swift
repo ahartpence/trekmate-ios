@@ -10,8 +10,8 @@ import ScalingHeaderScrollView
 import MapKit
 
 struct HomeView: View {
-    @StateObject var uiVM: UIModel = UIModel()
-    @StateObject var tripVM: TripViewModel = TripViewModel()
+    @EnvironmentObject var uiVM: UIModel
+    @EnvironmentObject var tripVM: TripViewModel
     
     @State private var sheetPresented: Bool = true
     
@@ -117,5 +117,9 @@ extension CLLocationCoordinate2D {
 }
 
 #Preview {
+    @Previewable @StateObject var uiVM: UIModel = UIModel()
+    @Previewable @StateObject var tripVM: TripViewModel = TripViewModel()
     HomeView()
+        .environmentObject(uiVM)
+        .environmentObject(tripVM)
 }
